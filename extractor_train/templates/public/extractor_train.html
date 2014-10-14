@@ -1,0 +1,15 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="body-content" style="background-color:lightGrey">
+    <div class="row" >
+      <h1>DOWNLOAD {{ downloads_id }} </h1>
+      <p> Here's the raw download to annotate...</p>
+      <div style="background-color:white">  <!-- height="1000px" > -->
+      <iframe sandbox src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>
+<!-- onload="this.width=screen.width;this.height=screen.height;" /> -->
+      </div> 
+    </div>
+</div>
+{% endblock %}
