@@ -2,6 +2,9 @@
 '''Public section, including homepage and signup.'''
 from flask import (Blueprint, request, render_template, flash, url_for,
                     redirect, session)
+
+import flask
+
 from flask.ext.login import login_user, login_required, logout_user
 
 from extractor_train.extensions import login_manager
@@ -57,3 +60,50 @@ def register():
 def about():
     form = LoginForm(request.form)
     return render_template("public/about.html", form=form)
+
+@blueprint.route("/download_text/<int:downloads_id>")
+def download_text( downloads_id ):
+    print 'downloads_id', downloads_id
+    download =  get_download( downloads_id )
+
+    raw_content = download['raw_content']
+
+    print raw_content[:200]
+
+    response = flask.make_response( raw_content );
+
+    return response
+
+    print download.keys()
+    
+    #form = LoginForm(request.form)
+    #return render_template("public/about.html", form=form)
+    #return download['raw_content']
+    return ''
+
+@blueprint.route("/extractor_train/<int:downloads_id>")
+def extractor_train( downloads_id ):
+    print 'downloads_id', downloads_id
+
+    form = LoginForm(request.form)
+    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id )
+    return download['raw_content']
+    return ''
+
+
+import cPickle
+import os.path
+
+api_key = cPickle.load( file( os.path.expanduser( '~/mediacloud_api_key.pickle' ), 'r' ) )
+
+loc_key = 'f66a50230d54afaf18822808aed649f1d6ca72b08fb06d5efb6247afe9fbae52'
+
+import mediacloud, requests, csv, sys, os, json, cPickle
+
+def get_download( downloads_id ):
+    download = requests.get('https://api.mediacloud.org/api/v2/downloads/single/'+str(downloads_id)+'?key='+api_key)
+
+    download.raise_for_status()
+
+    return download.json()[0]
+
