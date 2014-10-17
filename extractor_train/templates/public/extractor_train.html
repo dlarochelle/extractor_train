@@ -26,15 +26,18 @@ var initialDoc;
 jQuery(function ($) {
    downloads_id = {{ downloads_id }};
    $('#save_button').click( function() {
-      alert ( JSON.stringify( selections ) );
+      //alert ( JSON.stringify( selections ) );
 
       $.ajax( { url: '/save/', type: 'POST', dataType: 'json',
  contentType: 'application/json; charset=utf-8',
                data: JSON.stringify( { selections: selections, downloads_id: downloads_id } ) } ).done(function( data ) {
+          alert('saved');
           if ( console && console.log ) {
          console.log( "Sample of data:", data.slice( 0, 100 ) );
+         //#$('#save_message').text('SAVED {{downloads_id}} ' );
         }
-    });
+    }).fail( function( jqXHR, textStatus, errorThrown )
+{ alert('saved fail' ); } ).always( function() { } ) ;
 
     }); 
 });
@@ -129,6 +132,7 @@ function getSafeRanges(dangerous) {
 
 function highlightRange(range) {
     var newNode = document.createElement("div");
+    newNode.setAttribute("class", "mc-highlight");
     newNode.setAttribute("style", "background-color: yellow; display: inline;");
     range.surroundContents(newNode);
 
@@ -196,10 +200,12 @@ function getFrameDocument() {
 
 <div class="body-content" style="background-color:lightGrey">
    <input type="button"  onclick="alertSelected();" value="Mark article">
-   <input type="button"  id='save_button' value="Saved annotation">
+   <input type="button"  id='save_button' value="Save Annotations">
 
     <div class="row" id="row" >
       <h1>DOWNLOAD {{ downloads_id }} </h1>
+      <h1><a href='/extractor_train/{{ downloads_id_next }}'>NEXT DOWNLOAD</a>  </h1>
+      <div id='save_message'/>
       <p> Here's the raw download to annotate...</p>
       <div style="background-color:white">  <!-- height="1000px" > -->
       <iframe  sandbox="allow-same-origin" id="article_iframe" src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>  
