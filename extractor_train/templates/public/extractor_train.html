@@ -24,6 +24,17 @@ var highlighter;
 var initialDoc;
 
 jQuery(function ($) {
+   
+  /*  $('#save_button).click( function() {
+     alert ( JSON.strify( selections ) );
+
+     $.ajax( 'save', data: selections ).
+       done(function( data ) {
+          if ( console && console.log ) {
+         console.log( "Sample of data:", data.slice( 0, 100 ) );
+        }
+    });
+*/
 
 
 });
@@ -184,14 +195,8 @@ function getFrameDocument() {
 
 
 <div class="body-content" style="background-color:lightGrey">
-<input type="button" ontouchstart="highlightSelectedText();" onclick="highlightSelectedText();" value="Highlight selection">
-        <input type="button" ontouchstart="noteSelectedText();" onclick="noteSelectedText();" value="Add note to selection">
-        <input type="button" ontouchstart="removeHighlightFromSelectedText();" onclick="removeHighlightFromSelectedText();" value="Remove highlights from selection">
-        <br>
-        <input type="button" ontouchstart="highlightScopedSelectedText();" onclick="highlightScopedSelectedText();" value="Highlight within outlined paragraph">
-        <input type="button" ontouchstart="noteScopedSelectedText();" onclick="noteScopedSelectedText();" value="Annotate selection within outlined paragraph">
-
-        <input type="button" ontouchstart="alertSelected();" onclick="alertSelected();" value="Alert Selected">
+   <input type="button"  onclick="alertSelected();" value="Mark article">
+   <input type="button"  id='save_button' value="Saved annotation">
 
     <div class="row" id="row" >
       <h1>DOWNLOAD {{ downloads_id }} </h1>
