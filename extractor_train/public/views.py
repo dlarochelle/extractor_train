@@ -71,6 +71,12 @@ def logout():
 @blueprint.route("/register/", methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form, csrf_enabled=False)
+
+    valid_emails = [ 'ben.doernberg@gmail.com', 'dlarochelle@cyber.law.harvard.edu', 'bdoernberg@cyber.law.harvard.edu']
+
+    if form.email.data not in valid_emails:
+        return 'not an approved email';
+
     if form.validate_on_submit():
         new_user = User.create(username=form.username.data,
                         email=form.email.data,
