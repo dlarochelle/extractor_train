@@ -191,7 +191,7 @@ api_key = cPickle.load( file( os.path.expanduser( '~/mediacloud_api_key.pickle' 
 
 loc_key = 'f66a50230d54afaf18822808aed649f1d6ca72b08fb06d5efb6247afe9fbae52'
 
-import mediacloud, requests, csv, sys, os, json, cPickle
+import requests, csv, sys, os, json, cPickle
 
 def get_download( downloads_id ):
     download = requests.get('https://api.mediacloud.org/api/v2/downloads/single/'+str(downloads_id)+'?key='+api_key)
