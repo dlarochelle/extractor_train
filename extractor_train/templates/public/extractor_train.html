@@ -230,7 +230,7 @@ function getFrameDocument() {
       <h1>DOWNLOAD {{ downloads_id }} </h1>
       <p> Here's the raw download to annotate...</p>
       <div style="background-color:white">  <!-- height="1000px" > -->
-      <iframe  id="article_iframe" src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>  
+      <iframe  sandbox="allow-same-origin" id="article_iframe" src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>  
 <!-- onload="this.width=screen.width;this.height=screen.height;" /> -->
       </div> 
     </div>
