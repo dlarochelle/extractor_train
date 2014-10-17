@@ -9,6 +9,7 @@ from flask.ext.login import login_user, login_required, logout_user
 
 from extractor_train.extensions import login_manager
 from extractor_train.user.models import User
+from extractor_train.dlannotations.models import Dlannotations
 from extractor_train.public.forms import LoginForm
 from extractor_train.user.forms import RegisterForm
 from extractor_train.utils import flash_errors
@@ -123,7 +124,18 @@ def save( ):
 
     data = request.json
 
+    downloads_id = data[ 'downloads_id']
+    selections = data['selections']
+
     ipdb.set_trace()
+
+    qr = Dlannotations.query.filter( Dlannotations.downloads_id == downloads_id )
+    dl = qr.first()
+    if dl == None :
+        dl = Dlannotations.create( downloads_id=downloads_id, annotations_json=json.dumps( selections) )
+
+    else:
+        dl.update( downloads_id=downloads_id, annotations_json=json.dumps( selections) )
 
     response = flask.make_response( 'foo' );
     form = LoginForm(request.form)

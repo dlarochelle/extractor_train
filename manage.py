@@ -8,6 +8,7 @@ from flask.ext.migrate import MigrateCommand
 
 from extractor_train.app import create_app
 from extractor_train.user.models import User
+from extractor_train.dlannotations.models import Dlannotations
 from extractor_train.settings import DevConfig, ProdConfig
 from extractor_train.database import db
 

@@ -3,6 +3,7 @@ from wtforms import TextField, PasswordField
 from wtforms.validators import DataRequired
 
 from extractor_train.user.models import User
+from extractor_train.dlannotations.models import Dlannotations
 
 class LoginForm(Form):
     username = TextField('Username', validators=[DataRequired()])
