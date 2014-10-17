@@ -24,16 +24,18 @@ var highlighter;
 var initialDoc;
 
 jQuery(function ($) {
-   
+   downloads_id = {{ downloads_id }};
    $('#save_button').click( function() {
       alert ( JSON.stringify( selections ) );
 
-    /*  $.ajax( 'save', data: selections ).done(function( data ) {
+      $.ajax( { url: '/save/', type: 'POST', dataType: 'json',
+ contentType: 'application/json; charset=utf-8',
+               data: JSON.stringify( { selections: selections, downloads_id: downloads_id } ) } ).done(function( data ) {
           if ( console && console.log ) {
          console.log( "Sample of data:", data.slice( 0, 100 ) );
         }
     });
-*/
+
     }); 
 });
 

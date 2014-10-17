@@ -14,6 +14,8 @@ from extractor_train.user.forms import RegisterForm
 from extractor_train.utils import flash_errors
 from extractor_train.database import db
 
+import ipdb
+
 blueprint = Blueprint('public', __name__, static_folder="../static")
 
 @login_manager.user_loader
@@ -112,6 +114,22 @@ def extractor_train( downloads_id ):
     return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id )
     return download['raw_content']
     return ''
+
+
+@blueprint.route("/save/", methods=["GET", "POST"])
+def save( ):
+
+    print 'in save'
+
+    data = request.json
+
+    ipdb.set_trace()
+
+    response = flask.make_response( 'foo' );
+    form = LoginForm(request.form)
+    return render_template("public/about.html", form=form)
+    
+    #return response
 
 
 import cPickle
