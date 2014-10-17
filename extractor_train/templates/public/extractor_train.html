@@ -44,21 +44,21 @@ jQuery(function ($) {
 
 
 function alertSelected() {
-    frame = document.getElementById('article_iframe');
+    var frame = document.getElementById('article_iframe');
 
-    frameWindow = frame && frame.contentWindow;
-    frameDocument = frameWindow && frameWindow.document;
+    var frameWindow = frame && frame.contentWindow;
+    var frameDocument = frameWindow && frameWindow.document;
 
-    frame_sel = frameDocument.getSelection();
+    var frame_sel = frameDocument.getSelection();
 
-    r = frame_sel.getRangeAt(0)
+    var r = frame_sel.getRangeAt(0)
 
-    sc = r.startContainer
-    start_xpath = getXPath(sc);
-    ec = r.endContainer
-    end_xpath = getXPath(ec);
+    var sc = r.startContainer
+    var start_xpath = getXPath(sc);
+    var ec = r.endContainer
+    var end_xpath = getXPath(ec);
 
-    selection_info = {
+    var selection_info = {
         start_xpath: start_xpath,
         start_offset: r.startOffset,
         end_xpath: end_xpath,
@@ -140,22 +140,22 @@ function highlightRange(range) {
 }
 
 function highlight_selection(selection) {
-    frameDocument = getFrameDocument();
+    var frameDocument = getFrameDocument();
 
-    res = frameDocument.evaluate(selection['start_xpath'], frameDocument);
+    var res = frameDocument.evaluate(selection['start_xpath'], frameDocument);
 
-    startContainer = res.iterateNext();
+    var startContainer = res.iterateNext();
 
-    res = frameDocument.evaluate(selection['end_xpath'], frameDocument);
+    var res = frameDocument.evaluate(selection['end_xpath'], frameDocument);
 
-    endContainer = res.iterateNext();
+    var endContainer = res.iterateNext();
 
-    rangeTemp = new Range();
+    var rangeTemp = new Range();
 
     rangeTemp.setStart(startContainer, selection['start_offset']);
     rangeTemp.setEnd( endContainer, selection['end_offset']);
 
-safeRanges = getSafeRanges(rangeTemp);
+    var safeRanges = getSafeRanges(rangeTemp);
 
 for (var i = 0; i < safeRanges.length; i++) {
     highlightRange(safeRanges[i]);
@@ -171,7 +171,13 @@ function getXPath(element) {
     var xpath = '';
 
     if (element.nodeType == 3) {
-        xpath = "/text()" + xpath;
+        var id = $(element.parentNode).contents().filter(function() {
+		    return this.nodeType === 3; //Node.TEXT_NODE
+		    }).index(element) + 1;
+
+        id >= 1 ? (id = '[' + id + ']') : (id = '');
+
+        xpath = "/text()" + id + xpath;
         element = element.parentNode;
     }
 
@@ -205,7 +211,7 @@ function getFrameDocument() {
     <div class="row" id="row" >
       <h1>DOWNLOAD {{ downloads_id }} </h1>
       <h1><a href='/extractor_train/{{ downloads_id_next }}'>NEXT DOWNLOAD</a>  </h1>
-      <div id='save_message'/>
+      <div id='save_message'></div>
       <p> Here's the raw download to annotate...</p>
       <div style="background-color:white">  <!-- height="1000px" > -->
       <iframe  sandbox="allow-same-origin" id="article_iframe" src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>  
