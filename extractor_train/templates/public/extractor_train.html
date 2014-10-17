@@ -2,12 +2,235 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<style type="text/css">
+        .highlight {
+            background-color: yellow;
+        }
+
+        .note {
+            background-color: limegreen;
+        }
+        
+        #summary {
+            border: dotted orange 1px;
+        }
+    </style>
+
+   <script type="text/javascript">
+
+var serializedHighlights = decodeURIComponent(window.location.search.slice(window.location.search.indexOf("=") + 1));
+var highlighter;
+
+var initialDoc;
+
+jQuery(function ($) {
+
+
+});
+
+/*
+function highlightSelectedText() {
+    highlighter.highlightSelection("highlight", rangy.util.createOptions(null, {
+        containerElementId: 'article_iframe'
+    }));
+}
+
+function noteSelectedText() {
+    highlighter.highlightSelection("note");
+}
+
+function removeHighlightFromSelectedText() {
+    highlighter.unhighlightSelection();
+}
+
+function highlightScopedSelectedText() {
+    highlighter.highlightSelection("highlight", {
+        containerElementId: "summary"
+    });
+}
+
+function noteScopedSelectedText() {
+    highlighter.highlightSelection("note", {
+        containerElementId: "summary"
+    });
+}
+
+function reloadPage(button) {
+    button.form.elements["serializedHighlights"].value = highlighter.serialize();
+    button.form.submit();
+}
+
+*/
+
+function alertSelected() {
+    frame = document.getElementById('article_iframe');
+
+    frameWindow = frame && frame.contentWindow;
+    frameDocument = frameWindow && frameWindow.document;
+
+    frame_sel = frameDocument.getSelection();
+
+    r = frame_sel.getRangeAt(0)
+
+    sc = r.startContainer
+    start_xpath = getXPath(sc);
+    ec = r.endContainer
+    end_xpath = getXPath(ec);
+
+    selection_info = {
+        start_xpath: start_xpath,
+        start_offset: r.startOffset,
+        end_xpath: end_xpath,
+        end_offset: r.endOffset,
+    };
+
+    highlight_selection(selection_info);
+
+    selections.push(selection_info);
+
+    alert(selection_info);
+
+}
+
+
+//http://stackoverflow.com/questions/304837/javascript-user-selection-highlighting
+
+function getSafeRanges(dangerous) {
+    var a = dangerous.commonAncestorContainer;
+    // Starts -- Work inward from the start, selecting the largest safe range
+    var s = new Array(0),
+        rs = new Array(0);
+    if (dangerous.startContainer != a) for (var i = dangerous.startContainer; i != a; i = i.parentNode)
+    s.push(i);
+    if (0 < s.length) for (var i = 0; i < s.length; i++) {
+        var xs = document.createRange();
+        if (i) {
+            xs.setStartAfter(s[i - 1]);
+            xs.setEndAfter(s[i].lastChild);
+        } else {
+            xs.setStart(s[i], dangerous.startOffset);
+            xs.setEndAfter((s[i].nodeType == Node.TEXT_NODE) ? s[i] : s[i].lastChild);
+        }
+        rs.push(xs);
+    }
+
+    // Ends -- basically the same code reversed
+    var e = new Array(0),
+        re = new Array(0);
+    if (dangerous.endContainer != a) for (var i = dangerous.endContainer; i != a; i = i.parentNode)
+    e.push(i);
+    if (0 < e.length) for (var i = 0; i < e.length; i++) {
+        var xe = document.createRange();
+        if (i) {
+            xe.setStartBefore(e[i].firstChild);
+            xe.setEndBefore(e[i - 1]);
+        } else {
+            xe.setStartBefore((e[i].nodeType == Node.TEXT_NODE) ? e[i] : e[i].firstChild);
+            xe.setEnd(e[i], dangerous.endOffset);
+        }
+        re.unshift(xe);
+    }
+
+    // Middle -- the uncaptured middle
+    if ((0 < s.length) && (0 < e.length)) {
+        var xm = document.createRange();
+        xm.setStartAfter(s[s.length - 1]);
+        xm.setEndBefore(e[e.length - 1]);
+    } else {
+        return [dangerous];
+    }
+
+    // Concat
+    rs.push(xm);
+    response = rs.concat(re);
+
+    // Send to Console
+    return response;
+}
+
+
+function highlightRange(range) {
+    var newNode = document.createElement("div");
+    newNode.setAttribute("style", "background-color: yellow; display: inline;");
+    range.surroundContents(newNode);
+
+    $( newNode ).find( '*').css('background-color', 'yellow').css('display', 'inline');
+}
+
+function highlight_selection(selection) {
+    frameDocument = getFrameDocument();
+
+    res = frameDocument.evaluate(selection['start_xpath'], frameDocument);
+
+    startContainer = res.iterateNext();
+
+    res = frameDocument.evaluate(selection['end_xpath'], frameDocument);
+
+    endContainer = res.iterateNext();
+
+    rangeTemp = new Range();
+
+    rangeTemp.setStart(startContainer, selection['start_offset']);
+    rangeTemp.setEnd( endContainer, selection['end_offset']);
+
+safeRanges = getSafeRanges(rangeTemp);
+
+for (var i = 0; i < safeRanges.length; i++) {
+    highlightRange(safeRanges[i]);
+}
+
+return;
+
+}
+
+// See http://stackoverflow.com/questions/3454526/how-to-calculate-the-xpath-position-of-an-element-using-javascript
+
+function getXPath(element) {
+    var xpath = '';
+
+    if (element.nodeType == 3) {
+        xpath = "/text()" + xpath;
+        element = element.parentNode;
+    }
+
+
+    for (; element && (element.nodeType == 1 || element.nodeType == 3); element = element.parentNode) {
+        var id = $(element.parentNode).children(element.tagName).index(element) + 1;
+        id >= 1 ? (id = '[' + id + ']') : (id = '');
+        xpath = '/' + element.tagName.toLowerCase() + id + xpath;
+    }
+    return xpath;
+}
+
+selections = []
+
+function getFrameDocument() {
+    frame = document.getElementById('article_iframe');
+
+    frameWindow = frame && frame.contentWindow;
+    frameDocument = frameWindow && frameWindow.document;
+
+    return frameDocument
+}
+ 
+    </script>
+
+
 <div class="body-content" style="background-color:lightGrey">
-    <div class="row" >
+<input type="button" ontouchstart="highlightSelectedText();" onclick="highlightSelectedText();" value="Highlight selection">
+        <input type="button" ontouchstart="noteSelectedText();" onclick="noteSelectedText();" value="Add note to selection">
+        <input type="button" ontouchstart="removeHighlightFromSelectedText();" onclick="removeHighlightFromSelectedText();" value="Remove highlights from selection">
+        <br>
+        <input type="button" ontouchstart="highlightScopedSelectedText();" onclick="highlightScopedSelectedText();" value="Highlight within outlined paragraph">
+        <input type="button" ontouchstart="noteScopedSelectedText();" onclick="noteScopedSelectedText();" value="Annotate selection within outlined paragraph">
+
+        <input type="button" ontouchstart="alertSelected();" onclick="alertSelected();" value="Alert Selected">
+
+    <div class="row" id="row" >
       <h1>DOWNLOAD {{ downloads_id }} </h1>
       <p> Here's the raw download to annotate...</p>
       <div style="background-color:white">  <!-- height="1000px" > -->
-      <iframe sandbox src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>
+      <iframe  id="article_iframe" src="/download_text_fake/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>  
 <!-- onload="this.width=screen.width;this.height=screen.height;" /> -->
       </div> 
     </div>
