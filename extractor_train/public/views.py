@@ -17,6 +17,29 @@ from extractor_train.database import db
 
 import ipdb
 
+msm_downloads_file = 'new_msm_download_ids.txt'
+
+
+downloads_id_list = []
+
+def get_downloads_id_list():
+
+    #if len( downloads_id_list ) > 0 :
+    #    return downloads_id_list
+
+    with open( 'new_msm_download_ids.txt' , 'rb' ) as f:
+        content = f.readlines()
+
+    content.pop()
+    
+    #ipdb.set_trace()
+
+    downloads_id_list = [ int(downloads_id) for downloads_id in content if len(downloads_id) > 0 and downloads_id != ''];
+
+    print len ( downloads_id_list );
+
+    return downloads_id_list
+
 blueprint = Blueprint('public', __name__, static_folder="../static")
 
 @login_manager.user_loader
@@ -112,7 +135,16 @@ def extractor_train( downloads_id ):
     print 'downloads_id', downloads_id
 
     form = LoginForm(request.form)
-    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id )
+
+    downloads_id_list = get_downloads_id_list()
+
+    #ipdb.set_trace()
+
+    dl_index = downloads_id_list.index( downloads_id )
+
+    downloads_id_next = downloads_id_list[ dl_index + 1 ]
+
+    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next )
     return download['raw_content']
     return ''
 
@@ -127,7 +159,7 @@ def save( ):
     downloads_id = data[ 'downloads_id']
     selections = data['selections']
 
-    ipdb.set_trace()
+    #ipdb.set_trace()
 
     qr = Dlannotations.query.filter( Dlannotations.downloads_id == downloads_id )
     dl = qr.first()
@@ -137,11 +169,13 @@ def save( ):
     else:
         dl.update( downloads_id=downloads_id, annotations_json=json.dumps( selections) )
 
-    response = flask.make_response( 'foo' );
-    form = LoginForm(request.form)
-    return render_template("public/about.html", form=form)
+    print "success";
+    response = flask.make_response( json.dumps( { 'message': 'success' } ) );
+
+    #form = LoginForm(request.form)
+    #return render_template("public/about.html", form=form)
     
-    #return response
+    return response
 
 
 import cPickle
