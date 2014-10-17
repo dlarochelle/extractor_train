@@ -81,6 +81,29 @@ def download_text( downloads_id ):
     #return download['raw_content']
     return ''
 
+@blueprint.route("/download_text_fake/<int:downloads_id>")
+def download_text_fake( downloads_id ):
+    raw_content = '''
+<html>
+<head>
+</head>
+<body>
+<p>
+Article Paragraph 1
+</p>
+<p>
+Article Paragraph 2
+</p>
+<p>
+Article Paragraph 3
+</p>
+</html>
+'''
+
+    response = flask.make_response( raw_content );
+
+    return response
+
 @blueprint.route("/extractor_train/<int:downloads_id>")
 def extractor_train( downloads_id ):
     print 'downloads_id', downloads_id

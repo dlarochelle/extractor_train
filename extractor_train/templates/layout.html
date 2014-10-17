@@ -27,6 +27,28 @@
 
   {% block css %}{% endblock %}
 
+
+<!-- JavaScript at the bottom for fast page loading -->
+{% assets "js_all" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+{% block js %}
+{% endblock %}
+
+<!--
+<link rel="stylesheet" href="http://assets.annotateit.org/annotator/v1.2.7/annotator.min.css">
+-->
+
+<script>
+//alert('foo');
+jQuery(function ($) {
+//$('#article_iframe').contents().find('body').annotator();
+//$('body').annotator();
+});
+
+</script>
+
 </head>
 <body class="{% block body_class %}{% endblock %}">
 {% block body %}
@@ -60,11 +82,7 @@
 
 {% include "footer.html" %}
 
-<!-- JavaScript at the bottom for fast page loading -->
-{% assets "js_all" %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-{% endassets %}
-{% block js %}{% endblock %}
+
 <!-- end scripts -->
 {% endblock %}
 </body>
