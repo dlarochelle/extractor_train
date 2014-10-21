@@ -49,6 +49,8 @@ function alertSelected() {
     var frameWindow = frame && frame.contentWindow;
     var frameDocument = frameWindow && frameWindow.document;
 
+    //unhighlight()
+
     var frame_sel = frameDocument.getSelection();
 
     var r = frame_sel.getRangeAt(0)
@@ -66,8 +68,12 @@ function alertSelected() {
     };
 
     highlight_selection(selection_info);
-
     selections.push(selection_info);
+
+    //for (var i = 0; i < selections.length; i++)
+    //{
+    //	highlight_selection(selections[i]);
+    //}
 
    // alert(selection_info);
 
@@ -137,6 +143,14 @@ function highlightRange(range) {
     range.surroundContents(newNode);
 
     $( newNode ).find( '*').css('background-color', 'yellow').css('display', 'inline');
+}
+
+function unhighlight()
+{
+   var frameDocument = getFrameDocument();
+
+   jfd = $( frameDocument )
+   jfd.find( 'div.mc-highlight').contents().unwrap()
 }
 
 function highlight_selection(selection) {
