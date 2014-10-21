@@ -59,4 +59,4 @@ class Dlannotations( Model):
         return json.loads( self.annotations_json )
 
     def __repr__(self):
-        return '<Dlannotation({downloads_id!r})>'.format(dlannotationname=self.downloads_id)
+        return '<Dlannotation({downloads_id!r})>'.format(downloads_id=self.downloads_id)
