@@ -136,6 +136,28 @@ Article Paragraph 3
 
     return response
 
+from lxml import etree
+import xml.etree.ElementTree as ET
+
+def get_annotated_content( downloads_id ):
+    download = get_download( downloads_id )
+    download_text = download[ 'raw_content' ]
+    qr = Dlannotations.query.filter( Dlannotations.downloads_id == downloads_id )
+    dl = qr.first()
+    annotations = dl.annotations
+
+    htmlparser = etree.HTMLParser()
+
+    root = etree.fromstring( download_text, htmlparser )
+
+    #ipdb.set_trace()
+    for annotation in annotations:
+        ipdb.set_trace()
+        start = root.xpath( annotation['start_xpath'] )[0]
+        end   = root.xpath( annotation['end_xpath'] )[0]
+
+        
+    
 @blueprint.route("/extractor_train/<int:downloads_id>")
 def extractor_train( downloads_id ):
     print 'downloads_id', downloads_id
@@ -146,11 +168,13 @@ def extractor_train( downloads_id ):
 
     #ipdb.set_trace()
 
+    num_downloads_annotated = Dlannotations.query.count()
+
     dl_index = downloads_id_list.index( downloads_id )
 
     downloads_id_next = downloads_id_list[ dl_index + 1 ]
 
-    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next )
+    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, num_downloads_annotated=num_downloads_annotated )
     return download['raw_content']
     return ''
 
@@ -174,6 +198,9 @@ def save( ):
 
     else:
         dl.update( downloads_id=downloads_id, annotations_json=json.dumps( selections) )
+
+    
+    #annotated_content = get_annotated_content( downloads_id )
 
     print "success";
     response = flask.make_response( json.dumps( { 'message': 'success' } ) );
