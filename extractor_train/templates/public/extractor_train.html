@@ -30,7 +30,7 @@ jQuery(function ($) {
 
       $.ajax( { url: '/save/', type: 'POST', dataType: 'json',
  contentType: 'application/json; charset=utf-8',
-               data: JSON.stringify( { selections: selections, downloads_id: downloads_id } ) } ).done(function( data ) {
+               data: JSON.stringify( { selections: selections, downloads_id: downloads_id, annotator_name: $('#annotator_name').val() } ) } ).done(function( data ) {
           alert('saved');
           if ( console && console.log ) {
          console.log( "Sample of data:", data.slice( 0, 100 ) );
@@ -226,9 +226,10 @@ function getFrameDocument() {
 
     <div class="row" id="row" >
       <h1>DOWNLOAD {{ downloads_id }} </h1>
-      <h1><a href='/extractor_train/{{ downloads_id_next }}'>NEXT DOWNLOAD</a>  </h1>
+      <h1><a href='/extractor_train/{{ downloads_id_next }}?annotator_name={{annotator_name }}'>NEXT DOWNLOAD</a>  </h1>
       <div id='save_message'></div>
       <p id='downloads_annotated'>Total Downloads Annotated: {{ num_downloads_annotated}}</p>
+      <p>Your Name: <input type="text" id="annotator_name" value="{{annotator_name}}" maxlength=50></input><p>
       <p> Here's the raw download to annotate...</p>
       <div style="background-color:white">  <!-- height="1000px" > -->
       <iframe  sandbox="allow-same-origin" id="article_iframe" src="/download_text/{{ downloads_id }}"  frameborder="0" style="overflow:hidden;height:1000px;width:100%" height="1000px" width="100%" onload="this.width=screen.width;this.height=screen.height;" ></iframe>  

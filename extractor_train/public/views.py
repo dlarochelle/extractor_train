@@ -93,12 +93,18 @@ def about():
     form = LoginForm(request.form)
     return render_template("public/about.html", form=form)
 
+def get_download_raw_content( downloads_id ):
+    download =  get_download( downloads_id )
+
+    raw_content = download['raw_content'] 
+
+    return raw_content
+
 @blueprint.route("/download_text/<int:downloads_id>")
 def download_text( downloads_id ):
     print 'downloads_id', downloads_id
-    download =  get_download( downloads_id )
 
-    raw_content = download['raw_content']
+    raw_content = get_download_raw_content( downloads_id )
 
     print raw_content[:200]
 
@@ -106,12 +112,6 @@ def download_text( downloads_id ):
 
     return response
 
-    print download.keys()
-    
-    #form = LoginForm(request.form)
-    #return render_template("public/about.html", form=form)
-    #return download['raw_content']
-    return ''
 
 @blueprint.route("/download_text_fake/<int:downloads_id>")
 def download_text_fake( downloads_id ):
@@ -168,13 +168,15 @@ def extractor_train( downloads_id ):
 
     #ipdb.set_trace()
 
+    annotator_name = request.args.get('annotator_name',None )
+
     num_downloads_annotated = Dlannotations.query.count()
 
     dl_index = downloads_id_list.index( downloads_id )
 
     downloads_id_next = downloads_id_list[ dl_index + 1 ]
 
-    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, num_downloads_annotated=num_downloads_annotated )
+    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, num_downloads_annotated=num_downloads_annotated, annotator_name=annotator_name )
     return download['raw_content']
     return ''
 
@@ -189,18 +191,22 @@ def save( ):
     downloads_id = data[ 'downloads_id']
     selections = data['selections']
 
+    annotator_name = data[ 'annotator_name' ]
+
     #ipdb.set_trace()
+    raw_content = get_download_raw_content( downloads_id )
 
     qr = Dlannotations.query.filter( Dlannotations.downloads_id == downloads_id )
     dl = qr.first()
     if dl == None :
-        dl = Dlannotations.create( downloads_id=downloads_id, annotations_json=json.dumps( selections) )
+        dl = Dlannotations.create( downloads_id=downloads_id, raw_content=raw_content, annotator_name=annotator_name, annotations_json=json.dumps( selections) )
 
     else:
-        dl.update( downloads_id=downloads_id, annotations_json=json.dumps( selections) )
+        dl.update( downloads_id=downloads_id, raw_content=raw_content, annotator_name=annotator_name, annotations_json=json.dumps( selections) )
 
     
     #annotated_content = get_annotated_content( downloads_id )
+
 
     print "success";
     response = flask.make_response( json.dumps( { 'message': 'success' } ) );
