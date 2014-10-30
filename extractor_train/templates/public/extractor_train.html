@@ -40,8 +40,20 @@ jQuery(function ($) {
 { alert('saved fail' ); } ).always( function() { } ) ;
 
     }); 
+
+    $('#reload_and_highlight').click( function() {
+	reload_and_highlight();
+    } );
 });
 
+function reload_and_highlight()
+{
+   $('#article_iframe').on("load", function() {
+	    //alert('iframe loaded');
+       highlight_all_selections();
+   });
+   $('#article_iframe')[0].contentWindow.location.reload(true);
+}
 
 function alertSelected() {
     var frame = document.getElementById('article_iframe');
@@ -49,7 +61,7 @@ function alertSelected() {
     var frameWindow = frame && frame.contentWindow;
     var frameDocument = frameWindow && frameWindow.document;
 
-    //unhighlight()
+    unhighlight()
 
     var frame_sel = frameDocument.getSelection();
 
@@ -67,14 +79,29 @@ function alertSelected() {
         end_offset: r.endOffset,
     };
 
-    highlight_selection(selection_info);
+    //highlight_selection(selection_info);
     selections.push(selection_info);
 
-    //for (var i = 0; i < selections.length; i++)
-    //{
-    //	highlight_selection(selections[i]);
-    //}
+    highlight_all_selections();
+}
 
+function highlight_all_selections()
+{
+    var selection_ranges = new Array( 0 );
+
+    for (var i = 0; i < selections.length; i++)
+    {
+	var r = range_from_selection( selections[i] );
+
+	selection_ranges.push( r );
+    }
+
+    for (var i = 0; i < selection_ranges.length; i++)
+    {
+    	highlight_unsafe_range(selection_ranges[i]);
+    }
+
+    
    // alert(selection_info);
 
 }
@@ -150,10 +177,13 @@ function unhighlight()
    var frameDocument = getFrameDocument();
 
    jfd = $( frameDocument )
-   jfd.find( 'div.mc-highlight').contents().unwrap()
+   jfd.find( 'div.mc-highlight').css('background-color', 'white').css('display', 'inline');
+   jfd.find( 'div.mc-highlight').contents().unwrap();
+   jfd.find( 'div.mc-highlight').remove()		     
 }
 
-function highlight_selection(selection) {
+function range_from_selection( selection )
+{
     var frameDocument = getFrameDocument();
 
     var res = frameDocument.evaluate(selection['start_xpath'], frameDocument);
@@ -169,11 +199,29 @@ function highlight_selection(selection) {
     rangeTemp.setStart(startContainer, selection['start_offset']);
     rangeTemp.setEnd( endContainer, selection['end_offset']);
 
+    return rangeTemp;
+}
+
+function highlight_unsafe_range( range )
+{
+    var safeRanges = getSafeRanges(range);
+
+    for (var i = 0; i < safeRanges.length; i++) {
+       highlightRange(safeRanges[i]);
+    }
+
+return;
+}
+
+function highlight_selection(selection) {
+
+    var rangeTemp = range_from_selection( selection );
+
     var safeRanges = getSafeRanges(rangeTemp);
 
-for (var i = 0; i < safeRanges.length; i++) {
-    highlightRange(safeRanges[i]);
-}
+    for (var i = 0; i < safeRanges.length; i++) {
+       highlightRange(safeRanges[i]);
+    }
 
 return;
 
@@ -221,6 +269,7 @@ function getFrameDocument() {
 <div id="extractor_buttons" style="position:fixed" >
    <input type="button"  onclick="alertSelected();" value="Mark article">
    <input type="button"  id='save_button' value="Save Annotations">
+   <input type="button"  id='reload_and_highlight' value="Reload & Highlight">
 </div>
 <div class="body-content" style="background-color:lightGrey">
 
