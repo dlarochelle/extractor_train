@@ -44,6 +44,11 @@ jQuery(function ($) {
     $('#reload_and_highlight').click( function() {
 	reload_and_highlight();
     } );
+
+    $('#purge_highlights').click( function() {
+	selections = []
+	reload_and_highlight();
+    });
 });
 
 function reload_and_highlight()
@@ -270,6 +275,7 @@ function getFrameDocument() {
    <input type="button"  onclick="alertSelected();" value="Mark article">
    <input type="button"  id='save_button' value="Save Annotations">
    <input type="button"  id='reload_and_highlight' value="Reload & Highlight">
+   <input type="button"  id='purge_highlights' value="Purge Highlights">
 </div>
 <div class="body-content" style="background-color:lightGrey">
 
