@@ -87,7 +87,16 @@ function alertSelected() {
     //highlight_selection(selection_info);
     selections.push(selection_info);
 
-    highlight_all_selections();
+    selections.sort( function( s1, s2 )
+		    {
+			r1 = range_from_selection( s1 );
+			r2 = range_from_selection( s2 );
+
+			return r1.compareBoundaryPoints( Range.START_TO_START , r2 );
+		    });
+
+    reload_and_highlight();
+    //highlight_all_selections();
 }
 
 function highlight_all_selections()
@@ -99,6 +108,18 @@ function highlight_all_selections()
 	var r = range_from_selection( selections[i] );
 
 	selection_ranges.push( r );
+    }
+
+    for (var i = 0; i < selection_ranges.length - 1; i++)
+    {
+	if ( ( selection_ranges[i].compareBoundaryPoints( Range.START_TO_START , selection_ranges[i+1] ) != -1)
+	     || ( selection_ranges[i].compareBoundaryPoints( Range.START_TO_END , selection_ranges[i+1] ) > 0) )
+	{
+	    selections = [];
+	    alert('selections CANNOT overlap. Clearing Highlights');
+	    reload_and_highlight();
+	    throw Error( 'Ranges are not sorted' );
+	}
     }
 
     for (var i = 0; i < selection_ranges.length; i++)
@@ -128,7 +149,31 @@ function getSafeRanges(dangerous) {
             xs.setEndAfter(s[i].lastChild);
         } else {
             xs.setStart(s[i], dangerous.startOffset);
-            xs.setEndAfter((s[i].nodeType == Node.TEXT_NODE) ? s[i] : s[i].lastChild);
+	    var end_after;
+	    if ( s[i].childElementCount == 0 )
+	    {
+		if( ( dangerous.startOffset == 0 ) && ( s[i] != dangerous.endcontainer ) )
+		{
+		    xs.setStartBefore( s[i] );
+		    xs.setEndAfter( s[i] );
+		}
+		else
+		{
+		    xs.setEnd( s[i], 0 );
+		}
+	    }
+	    else
+	    {
+		if ( ( s[i].nodeType == Node.TEXT_NODE ) )
+		{
+		    end_after = s[ i ];
+		}
+		else 
+		{
+		    end_after = s[i].lastChild
+		}
+		xs.setEndAfter( end_after );
+	    }
         }
         rs.push(xs);
     }
