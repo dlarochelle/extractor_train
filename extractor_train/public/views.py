@@ -18,7 +18,8 @@ from extractor_train.database import db
 import ipdb
 
 msm_downloads_file = 'new_msm_download_ids.txt'
-
+political_blogs_file = 'new_political_blogs_5727_download_ids.txt'
+downloads_id_file = political_blogs_file
 
 downloads_id_list = []
 
@@ -27,7 +28,7 @@ def get_downloads_id_list():
     #if len( downloads_id_list ) > 0 :
     #    return downloads_id_list
 
-    with open( 'new_msm_download_ids.txt' , 'rb' ) as f:
+    with open( downloads_id_file , 'rb' ) as f:
         content = f.readlines()
 
     content.pop()
