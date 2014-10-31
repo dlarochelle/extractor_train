@@ -87,6 +87,50 @@ function alertSelected() {
     //highlight_selection(selection_info);
     selections.push(selection_info);
 
+    reload_and_highlight();
+    //highlight_all_selections();
+}
+
+function highlight_all_selections_old()
+{
+    var selection_ranges = new Array( 0 );
+
+    for (var i = 0; i < selections.length; i++)
+    {
+	var r = range_from_selection( selections[i] );
+
+	selection_ranges.push( r );
+    }
+
+    for (var i = 0; i < selection_ranges.length - 1; i++)
+    {
+	if ( ( selection_ranges[i].compareBoundaryPoints( Range.START_TO_START , selection_ranges[i+1] ) != -1)
+	     || ( selection_ranges[i].compareBoundaryPoints( Range.START_TO_END , selection_ranges[i+1] ) > 0) )
+	{
+	    selections = [];
+	    alert('selections CANNOT overlap. Clearing Highlights');
+	    //reload_and_highlight();
+	    throw Error( 'Ranges are not sorted' );
+	}
+    }
+
+    
+
+    for (var i = 0; i < selection_ranges.length; i++)
+    {
+    	highlight_unsafe_range(selection_ranges[i]);
+    }
+
+    
+   // alert(selection_info);
+
+}
+
+
+function highlight_all_selections()
+{
+    var selection_ranges = new Array( 0 );
+
     selections.sort( function( s1, s2 )
 		    {
 			r1 = range_from_selection( s1 );
@@ -95,13 +139,6 @@ function alertSelected() {
 			return r1.compareBoundaryPoints( Range.START_TO_START , r2 );
 		    });
 
-    reload_and_highlight();
-    //highlight_all_selections();
-}
-
-function highlight_all_selections()
-{
-    var selection_ranges = new Array( 0 );
 
     for (var i = 0; i < selections.length; i++)
     {
@@ -122,12 +159,26 @@ function highlight_all_selections()
 	}
     }
 
+    var frameDocument = getFrameDocument();
+    var frame_sel = frameDocument.getSelection();
+
+
     for (var i = 0; i < selection_ranges.length; i++)
     {
-    	highlight_unsafe_range(selection_ranges[i]);
+    	//highlight_unsafe_range(selection_ranges[i]);
+	frameDocument.designMode = "on";
+
+	frame_sel.removeAllRanges();
+
+	frame_sel.addRange( selection_ranges[i] );
+
+	frameDocument.execCommand( "BackColor", false, 'yellow' )
+
+	frameDocument.designMode = "off";
+
+	frame_sel.removeAllRanges();
     }
 
-    
    // alert(selection_info);
 
 }
