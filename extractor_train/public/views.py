@@ -19,7 +19,13 @@ import ipdb
 
 msm_downloads_file = 'new_msm_download_ids.txt'
 political_blogs_file = 'new_political_blogs_5727_download_ids.txt'
-downloads_id_file = political_blogs_file
+
+download_id_files = [ 'egypt_composite_dalia_20140425_media_tag_8878255_download_ids.txt',
+                      'new_msm_download_ids.txt', 
+                      'new_political_blogs_5727_download_ids.txt',
+                      'russian_media_tag_7796878_download_ids.txt' ]
+
+#ownloads_id_file = political_blogs_file
 
 downloads_id_list = []
 
@@ -28,16 +34,21 @@ def get_downloads_id_list():
     #if len( downloads_id_list ) > 0 :
     #    return downloads_id_list
 
-    with open( downloads_id_file , 'rb' ) as f:
-        content = f.readlines()
+    downloads_id_list = []
 
-    content.pop()
-    
-    #ipdb.set_trace()
+    for downloads_id_file in download_id_files:
+        #print 'downloads_id_file', downloads_id_file
 
-    downloads_id_list = [ int(downloads_id) for downloads_id in content if len(downloads_id) > 0 and downloads_id != ''];
+        with open( downloads_id_file , 'rb' ) as f:
+            content = f.readlines()
 
-    print len ( downloads_id_list );
+        content.pop()
+
+        #ipdb.set_trace()
+
+        downloads_id_list.extend( [ int(downloads_id) for downloads_id in content if len(downloads_id) > 0 and downloads_id != ''] )
+
+        #print len ( downloads_id_list );
 
     return downloads_id_list
 
