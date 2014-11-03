@@ -228,6 +228,46 @@ def save( ):
     
     return response
 
+@blueprint.route("/previous_annotations/", methods=["POST"])
+def previous_annotations( ):
+
+    print 'previous_annotations'
+    #ipdb.set_trace()
+
+    data = request.json
+
+    downloads_id = data[ 'downloads_id']
+    
+    #selections = data['selections']
+
+    #annotator_name = data[ 'annotator_name' ]
+
+    #ipdb.set_trace()
+    #raw_content = get_download_raw_content( downloads_id )
+
+    qr = Dlannotations.query.filter( Dlannotations.downloads_id == downloads_id )
+    dl = qr.first()
+
+    if dl == None :
+        ret = { 'previously_annotated': False }
+    else:
+        #ipdb.set_trace()
+        ret = { 'previously_annotated': True,
+                'downloads_id': dl.downloads_id,
+                'annotator_name': dl.annotator_name,
+                'annotations': dl.annotations
+                }
+    
+    #annotated_content = get_annotated_content( downloads_id )
+
+    response = flask.make_response( json.dumps( ret ) );
+
+    #form = LoginForm(request.form)
+    #return render_template("public/about.html", form=form)
+
+    print 'ret', ret
+
+    return response
 
 import cPickle
 import os.path
