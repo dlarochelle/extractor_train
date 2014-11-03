@@ -30,7 +30,7 @@ jQuery(function ($) {
 
       $.ajax( { url: '/save/', type: 'POST', dataType: 'json',
  contentType: 'application/json; charset=utf-8',
-               data: JSON.stringify( { selections: selections, downloads_id: downloads_id, annotator_name: $('#annotator_name').val() } ) } ).done(function( data ) {
+		data: JSON.stringify( { selections: selections, downloads_id: downloads_id, selected_texts: selected_texts, annotator_name: $('#annotator_name').val() } ) } ).done(function( data ) {
           alert('saved');
           if ( console && console.log ) {
          //console.log( "Sample of data:", data.slice( 0, 100 ) );
