@@ -33,7 +33,7 @@ jQuery(function ($) {
                data: JSON.stringify( { selections: selections, downloads_id: downloads_id, annotator_name: $('#annotator_name').val() } ) } ).done(function( data ) {
           alert('saved');
           if ( console && console.log ) {
-         console.log( "Sample of data:", data.slice( 0, 100 ) );
+         //console.log( "Sample of data:", data.slice( 0, 100 ) );
          //#$('#save_message').text('SAVED {{downloads_id}} ' );
         }
     }).fail( function( jqXHR, textStatus, errorThrown )
@@ -49,7 +49,33 @@ jQuery(function ($) {
 	selections = []
 	reload_and_highlight();
     });
+
+    $('#load_previous_annotations').click( function() {
+	load_previous_annotations();
+    });
+
 });
+
+function load_previous_annotations()
+{
+ $.ajax( { url: '/previous_annotations/', type: 'POST', dataType: 'json',
+ contentType: 'application/json; charset=utf-8',
+           data: JSON.stringify( { downloads_id: downloads_id } ) }).done(function( data ) {
+          //alert('fetched');
+		   if ( data[  'previously_annotated' ] )
+		   {
+		       selections = data['annotations' ];
+		       annotator_name = data['annotator_name'];
+		       $('#annotator_name').val( annotator_name );
+
+		       reload_and_highlight();
+		   }
+		   else
+		   {
+		       alert('Not previously annotated' );
+		   }
+	   }).fail( function( jqXHR, textStatus, errorThrown ) { alert('load_previous_annotations failed' ); } ).always( function() { } );
+}
 
 function reload_and_highlight()
 {
@@ -91,7 +117,7 @@ function alertSelected() {
     //highlight_all_selections();
 }
 
-function highlight_all_selections_old()
+/*function highlight_all_selections_old()
 {
     var selection_ranges = new Array( 0 );
 
@@ -124,9 +150,9 @@ function highlight_all_selections_old()
     
    // alert(selection_info);
 
-}
+}*/
 
-
+selected_texts = []
 function highlight_all_selections()
 {
     var selection_ranges = new Array( 0 );
@@ -162,6 +188,7 @@ function highlight_all_selections()
     var frameDocument = getFrameDocument();
     var frame_sel = frameDocument.getSelection();
 
+    selected_texts = []
 
     for (var i = 0; i < selection_ranges.length; i++)
     {
@@ -173,6 +200,8 @@ function highlight_all_selections()
 	frame_sel.addRange( selection_ranges[i] );
 
 	frameDocument.execCommand( "BackColor", false, 'yellow' )
+
+	selected_texts.push( frame_sel.toString() );
 
 	frameDocument.designMode = "off";
 
@@ -283,6 +312,17 @@ function unhighlight()
    jfd.find( 'div.mc-highlight').remove()		     
 }
 
+function element_from_xpath( xpath )
+{
+    var frameDocument = getFrameDocument();
+
+    var res = frameDocument.evaluate( xpath, frameDocument);
+
+    var ret = res.iterateNext();
+
+    return ret;
+}
+
 function range_from_selection( selection )
 {
     var frameDocument = getFrameDocument();
@@ -372,6 +412,7 @@ function getFrameDocument() {
    <input type="button"  id='save_button' value="Save Annotations">
    <input type="button"  id='reload_and_highlight' value="Reload & Highlight">
    <input type="button"  id='purge_highlights' value="Purge Highlights">
+   <input type="button"  id='load_previous_annotations' value="Load Previous Annotations">
 </div>
 <div class="body-content" style="background-color:lightGrey">
 
