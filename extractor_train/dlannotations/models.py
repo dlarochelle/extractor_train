@@ -39,6 +39,7 @@ class Dlannotations( Model):
     annotator_name   = Column(db.String(50), nullable=False) 
     raw_content     = Column(db.Text( convert_unicode=True),  nullable=False)
     last_updated     = Column(db.DateTime(timezone=True), onupdate=datetime.datetime.now)
+    selected_texts_json = Column(db.Text( convert_unicode=True),  nullable=True)
 
     #: The hashed password
     # password = Column(db.String(128), nullable=True)
@@ -48,8 +49,9 @@ class Dlannotations( Model):
     # active = Column(db.Boolean(), default=False)
     # is_admin = Column(db.Boolean(), default=False)
 
-    def __init__(self, downloads_id, annotations_json, raw_content, annotator_name,last_updated=datetime.datetime.now(), **kwargs):
-        db.Model.__init__(self, downloads_id=downloads_id, annotations_json=annotations_json, raw_content=raw_content, annotator_name=annotator_name, last_updated=datetime.datetime.now(), **kwargs)
+    def __init__(self, downloads_id, annotations_json, raw_content, annotator_name,last_updated=datetime.datetime.now(),  selected_texts_json=None, **kwargs):
+        db.Model.__init__(self, downloads_id=downloads_id, annotations_json=annotations_json, raw_content=raw_content, annotator_name=annotator_name, last_updated=datetime.datetime.now(), 
+                          selected_texts_json=selected_texts_json, **kwargs)
     #     if password:
     #         self.set_password(password)
     #     else:
