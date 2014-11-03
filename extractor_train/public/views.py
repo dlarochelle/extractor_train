@@ -204,17 +204,17 @@ def save( ):
     selections = data['selections']
 
     annotator_name = data[ 'annotator_name' ]
-
+    selected_texts = data[ 'selected_texts' ]
     #ipdb.set_trace()
     raw_content = get_download_raw_content( downloads_id )
 
     qr = Dlannotations.query.filter( Dlannotations.downloads_id == downloads_id )
     dl = qr.first()
     if dl == None :
-        dl = Dlannotations.create( downloads_id=downloads_id, raw_content=raw_content, annotator_name=annotator_name, annotations_json=json.dumps( selections) )
+        dl = Dlannotations.create( downloads_id=downloads_id, raw_content=raw_content, annotator_name=annotator_name, selected_texts_json=json.dumps(selected_texts), annotations_json=json.dumps( selections) )
 
     else:
-        dl.update( downloads_id=downloads_id, raw_content=raw_content, annotator_name=annotator_name, annotations_json=json.dumps( selections) )
+        dl.update( downloads_id=downloads_id, raw_content=raw_content, annotator_name=annotator_name, selected_texts_json=json.dumps(selected_texts), annotations_json=json.dumps( selections) )
 
     
     #annotated_content = get_annotated_content( downloads_id )
