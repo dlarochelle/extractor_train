@@ -21,9 +21,12 @@ msm_downloads_file = 'new_msm_download_ids.txt'
 political_blogs_file = 'new_political_blogs_5727_download_ids.txt'
 
 download_id_files = [ 'egypt_composite_dalia_20140425_media_tag_8878255_download_ids.txt',
-                      'new_msm_download_ids.txt', 
+                      #'new_msm_download_ids.txt', 
                       'new_political_blogs_5727_download_ids.txt',
-                      'russian_media_tag_7796878_download_ids.txt' ]
+                      'russian_media_tag_7796878_download_ids.txt',
+                      'pew_knight_study_media_tag_2453107_downloads_ids.txt',
+                      'ap_english_us_top25_20100110_media_tag_8875027_downloads_ids.txt'
+                      ]
 
 #ownloads_id_file = political_blogs_file
 
