@@ -418,6 +418,9 @@ function getFrameDocument() {
 
     <div class="row" id="row" >
       <h1>DOWNLOAD {{ downloads_id }} </h1>
+{% if next_unannotated_downloads_id != downloads_id_next %}
+      <h1><a href='/extractor_train/{{ next_unannotated_downloads_id }}?annotator_name={{annotator_name }}'>NEXT UNANNOTATED DOWNLOAD</a>  </h1>
+{% endif %}
       <h1><a href='/extractor_train/{{ downloads_id_next }}?annotator_name={{annotator_name }}'>NEXT DOWNLOAD</a>  </h1>
       <div id='save_message'></div>
       <p id='downloads_annotated'>Total Downloads Annotated: {{ num_downloads_annotated}}</p>
