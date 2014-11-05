@@ -30,7 +30,7 @@ download_id_files = [ 'egypt_composite_dalia_20140425_media_tag_8878255_download
 
 #ownloads_id_file = political_blogs_file
 
-downloads_id_list = []
+#downloads_id_list = []
 
 def get_downloads_id_list():
 
@@ -172,6 +172,16 @@ def get_annotated_content( downloads_id ):
         end   = root.xpath( annotation['end_xpath'] )[0]
 
         
+def get_next_unannotated_downloads_id( downloads_id ):
+    downloads_id_list = get_downloads_id_list()
+    dl_index =  downloads_id_list.index( downloads_id )
+
+    for next_downloads_id in downloads_id_list[ dl_index + 1: ]:
+         qr = Dlannotations.query.filter( Dlannotations.downloads_id == next_downloads_id )
+         dl = qr.first()
+         if dl == None :
+             return next_downloads_id
+        
     
 @blueprint.route("/extractor_train/<int:downloads_id>")
 def extractor_train( downloads_id ):
@@ -191,7 +201,9 @@ def extractor_train( downloads_id ):
 
     downloads_id_next = downloads_id_list[ dl_index + 1 ]
 
-    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, num_downloads_annotated=num_downloads_annotated, annotator_name=annotator_name )
+    next_unannotated_downloads_id = get_next_unannotated_downloads_id( downloads_id )
+
+    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, next_unannotated_downloads_id=next_unannotated_downloads_id, num_downloads_annotated=num_downloads_annotated, annotator_name=annotator_name )
     return download['raw_content']
     return ''
 
