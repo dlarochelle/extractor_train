@@ -203,8 +203,12 @@ def extractor_train( downloads_id ):
     downloads_id_next = downloads_id_list[ dl_index + 1 ]
 
     next_unannotated_downloads_id = get_next_unannotated_downloads_id( downloads_id )
+    
+    download = get_download( downloads_id )
 
-    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, next_unannotated_downloads_id=next_unannotated_downloads_id, num_downloads_annotated=num_downloads_annotated, annotator_name=annotator_name )
+    url = download[ 'url' ]
+
+    return render_template("public/extractor_train.html", form=form, downloads_id=downloads_id, downloads_id_next=downloads_id_next, next_unannotated_downloads_id=next_unannotated_downloads_id, num_downloads_annotated=num_downloads_annotated, url=url, annotator_name=annotator_name )
     return download['raw_content']
     return ''
 

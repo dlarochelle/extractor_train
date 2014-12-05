@@ -422,6 +422,7 @@ function getFrameDocument() {
       <h1><a href='/extractor_train/{{ next_unannotated_downloads_id }}?annotator_name={{annotator_name }}'>NEXT UNANNOTATED DOWNLOAD</a>  </h1>
 {% endif %}
       <h1><a href='/extractor_train/{{ downloads_id_next }}?annotator_name={{annotator_name }}'>NEXT DOWNLOAD</a>  </h1>
+      <h2><a href="{{ url }}">Article URL</a></h2>
       <div id='save_message'></div>
       <p id='downloads_annotated'>Total Downloads Annotated: {{ num_downloads_annotated}}</p>
       <p>Your Name: <input type="text" id="annotator_name" value="{{annotator_name}}" maxlength=50></input><p>
